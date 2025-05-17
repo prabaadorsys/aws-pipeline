@@ -2,5 +2,11 @@ version: 0.0
 os: ubuntu
 
 files:
-  - source: .
-    destination: /home/ubuntu/
+  - source: README.md
+    destination: /tmp/app/
+
+hooks:
+  AfterInstall:
+    - location: scripts/move_readme.sh
+      timeout: 60
+      runas: ubuntu
