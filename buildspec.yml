@@ -3,17 +3,32 @@ version: 0.2
 phases:
   install:
     commands:
-      - echo Installing Terraform...
+      - echo "Installing Terraform..."
       - curl -o terraform.zip https://releases.hashicorp.com/terraform/1.7.5/terraform_1.7.5_linux_amd64.zip
-      - yum install unzip
+      - yum install -y unzip
       - unzip terraform.zip
       - mv terraform /usr/local/bin/
+      - terraform version
+
+      - echo "Installing tfsec..."
+      - curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+      - tfsec --version
+
   pre_build:
     commands:
-      - terraform version
+      - echo "Initializing Terraform..."
       - terraform init
+
+      - echo "Running tfsec security scan..."
+      - tfsec --no-color --soft-fail .
+
   build:
     commands:
+      - echo "Validating Terraform code..."
       - terraform validate
+
+      - echo "Planning Terraform deployment..."
       - terraform plan
+
+      - echo "Applying Terraform deployment..."
       - terraform apply -auto-approve
