@@ -9,4 +9,7 @@ resource "aws_instance" "example" {
   tags = {
     Name = "testEC2Instance-wazuh"
   }
+  metadata_options {
+    http_endpoint = "enabled"
+  }
 }
